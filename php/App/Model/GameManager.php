@@ -11,8 +11,8 @@ class GameManager extends Database
 
     static function getTicketById($id)
     {
-        $sql = "SELECT * FROM ticket WHERE id = ?";
-        $ticket = Parent::select($sql, [$id]);
+        $sql = "SELECT ticket.*, ticket_values_model.* FROM ticket LEFT JOIN ticket_values_model ON ticket.gain = ticket_values_model.gain WHERE ticket.id = ?";
+        $ticket = Parent::selectAll($sql, [$id]);
         return $ticket;
     }
 
@@ -27,7 +27,18 @@ class GameManager extends Database
     {
         $payloadForSql = array_values($payload);
         $sql = "INSERT INTO ticket (gain, ticket_model_id, user_id, game_id) VALUES (?, ?, ?, ?)";
-        Parent::executeStatement($sql, $payloadForSql);
+        $result = Parent::executeStatement($sql, $payloadForSql);
+        if ($result) {
+            return array(
+                'status' => true,
+                'data' => 'Création du ticket effectué',
+            );
+        }
+
+        return array(
+            'status' => false,
+            'data' => []
+        );
     }
 
     static function getAllTicketsRemaining($userId, $gameId)
@@ -39,14 +50,32 @@ class GameManager extends Database
 
     static function setDiscoveredTicket($ticketId)
     {
-        $sql = "UPDATE ticket set dicovered = 1 WHERE id = ?";
-        Parent::executeStatement($sql, [$ticketId]);
+        $sql = "UPDATE ticket set discovered = 1 WHERE id = ?";
+        $result = Parent::executeStatement($sql, [$ticketId]);
+        if ($result) {
+            return array(
+                'status' => true,
+                'data' => 'Enregistrement de la découverte du ticket effectuée',
+            );
+        }
+
+        return array(
+            'status' => false,
+            'data' => []
+        );
     }
 
     static function getAllTicketsModel()
     {
         $sql = "SELECT * FROM ticket_model";
         $ticketsModel = Parent::selectAll($sql);
+        return $ticketsModel;
+    }
+
+    static function getValuesTicket($id, $gain)
+    {
+        $sql = "SELECT *, (SELECT ?) as id FROM ticket_values_model WHERE gain = ?";
+        $ticketsModel = Parent::selectAll($sql, [$id, $gain]);
         return $ticketsModel;
     }
 }

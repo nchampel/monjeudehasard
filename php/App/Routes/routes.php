@@ -23,6 +23,7 @@ header("Content-Type: text/html; charset=utf-8");
 
 $klein->respond(['GET'], '/test', [new GameController(), 'test']);
 $klein->respond(['GET'], '/init-game', [new GameController(), 'initGame']);
-$klein->respond(['GET'], '/get-ticket-random', [new GameController(), 'getTicketRandom']);
+// $klein->respond(['GET'], '/get-ticket-random', [new GameController(), 'getTicketRandom']);
+$klein->respond(['GET'], '/playing', [new GameController(), 'playing']);
 
 $klein->dispatch();
