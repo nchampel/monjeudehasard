@@ -33,13 +33,6 @@ class Ticket extends Database
         }
     }
 
-    static function getTicketById($id)
-    {
-        $sql = "SELECT * FROM ticket WHERE id = ?";
-        $ticket = Parent::select($sql, [$id]);
-        print_r($ticket);
-    }
-
     /**
      * Get the value of gain
      */
@@ -146,5 +139,17 @@ class Ticket extends Database
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

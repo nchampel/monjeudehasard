@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Controller\Test;
+use App\Controller\GameController;
 
 // require_once('../../vendor/autoload.php');
 
@@ -21,7 +21,8 @@ header("Content-Type: text/html; charset=utf-8");
 //     return 'Hello World!';
 // });
 
-$klein->respond(['GET'], '/test', [new test(), 'test']);
-// $klein->respond(['POST'], '/resources/updateEnergy', [new ResourcesController(), 'updateEnergy']);
+$klein->respond(['GET'], '/test', [new GameController(), 'test']);
+$klein->respond(['GET'], '/init-game', [new GameController(), 'initGame']);
+$klein->respond(['GET'], '/get-ticket-random', [new GameController(), 'getTicketRandom']);
 
 $klein->dispatch();
