@@ -21,39 +21,16 @@ function App() {
   const [ticket, setTicket] = useState(null);
   const [values, setValues] = useState([]);
   const valuesKeyName = [];
-  // const [displayValues, setDisplayValues] = useState([
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  //   false,
-  // ]);
-  const [displayValues, setDisplayValues] = useState([]);
-  // const [displayButtons, setDisplayButtons] = useState([
-  //   true,
-  //   true,
-  //   true,
-  //   true,
-  //   true,
-  //   true,
-  //   true,
-  //   true,
-  // ]);
-  const [displayButtons, setDisplayButtons] = useState([]);
 
-  // création du tableau des noms des clefs des valeurs du ticket et initialisation de l'affichage à false des valeurs et boutons
-  // let tempDisplayValues = [];
+  const [displayValues, setDisplayValues] = useState([]);
+
+  const [displayButtons, setDisplayButtons] = useState([]);
+  const [displayGain, setDisplayGain] = useState(false);
+
+  // création du tableau des noms des clefs des valeurs du ticket
   for (let i = 1; i <= 8; i++) {
     valuesKeyName.push("value_" + i);
-    // tempFillDisplayValues.push(false);
-    // displayButtons.push(true);
   }
-  // if (tempFillDisplayValues.length === 8) {
-  //   setDisplayValues(tempFillDisplayValues);
-  // }
 
   const playing = useCallback(async () => {
     try {
@@ -63,6 +40,7 @@ function App() {
         setIsLoading(false);
         console.log(data);
         setTicket(data);
+        // initialisation de l'affichage à false des valeurs et true des boutons
         let tempFillDisplayValues = [];
         let tempFillDisplayButtons = [];
         for (let i = 1; i <= 8; i++) {
@@ -85,32 +63,38 @@ function App() {
     if (ticket !== null) {
       let tempValues = [];
       valuesKeyName.forEach((key) => {
-        // console.log(values);
-        // tempValues = [...values];
         tempValues.push(ticket[key]);
-        // console.log(tempValues);
       });
       setValues(tempValues);
     }
   }, [ticket]);
 
   const handleDisplayValue = (index) => {
+    let countDiscoveredValues = 0;
     const tempDisplayValues = [...displayValues];
     tempDisplayValues[index] = true;
-    console.log(tempDisplayValues);
+    // console.log(tempDisplayValues);
     setDisplayValues(tempDisplayValues);
     const tempDisplayButtons = [...displayButtons];
     tempDisplayButtons[index] = false;
     setDisplayButtons(tempDisplayButtons);
+    tempDisplayValues.forEach((displayValue) => {
+      if (displayValue) {
+        countDiscoveredValues++;
+      }
+    });
+    if (countDiscoveredValues === 8) {
+      setDisplayGain(true);
+    }
   };
 
   useEffect(() => {
     console.log(values);
   }, [values]);
 
-  useEffect(() => {
-    console.log(displayValues);
-  }, [displayValues]);
+  // useEffect(() => {
+  //   console.log(displayValues);
+  // }, [displayValues]);
 
   return (
     <Box>
@@ -131,6 +115,10 @@ function App() {
               </Box>
             );
           })}
+          {displayGain && ticket.gain !== 1000000 && (
+            <Box>{`Gain : ${ticket.gain}`}</Box>
+          )}
+          {displayGain && ticket.gain === 1000000 && <Box>Jackpot</Box>}
         </Box>
       )}
     </Box>
